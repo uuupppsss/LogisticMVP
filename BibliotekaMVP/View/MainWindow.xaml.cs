@@ -25,7 +25,7 @@ namespace BibliotekaMVP.View
         private Product _selectedProduct;
         private Transport _selectedTransport;
         private Route _selectedRoute;
-
+        
         public MainWindow()
         {
             InitializeComponent();
