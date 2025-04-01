@@ -29,7 +29,7 @@ namespace BibliotekaMVP.View
         public MainWindow()
         {
             InitializeComponent();
-            _context = new LogisticsContext("TestDBnew");
+            _context = new LogisticsContext("TestDBnew2");
             try
             {
                 _context.Database.EnsureCreated();

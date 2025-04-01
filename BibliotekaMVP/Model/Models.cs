@@ -12,6 +12,7 @@ namespace BibliotekaMVP.Model
         public string CustomerName { get; set; }
         public DateTime OrderDate { get; set; }
         public string Status { get; set; }
+        public List<Product> Products { get; set; }
     }
 
     public class Product
@@ -20,6 +21,11 @@ namespace BibliotekaMVP.Model
         public int Quantity { get; set; }
         public decimal Price { get; set; }
         public string ProductName { get; set; }
+
+        public override string ToString()
+        {
+            return "ID: " + Id + " | Название: " + ProductName;
+        }
     }
 
     public class Route
