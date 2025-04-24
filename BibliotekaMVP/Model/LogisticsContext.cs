@@ -8,28 +8,34 @@ using System.Threading.Tasks;
 
 namespace BibliotekaMVP.Model
 {
-    public class LogisticsContext : DbContext
+    public class LogisticsContext
     {
-        private string _filename;
-        public DbSet<Order> Orders { get; set; }
-        public DbSet<Product> Products { get; set; }
-        public DbSet<Route> Routes { get; set; }
-        public DbSet<Transport> Transports { get; set; }
 
-        public LogisticsContext(string filename)
+        public LogisticsContext()
         {
-            _filename = filename;
+            
         }
+        //private string _filename;
+        //public DbSet<Order> Orders { get; set; }
+        //public DbSet<Product> Products { get; set; }
+        //public DbSet<Route> Routes { get; set; }
+        //public DbSet<Transport> Transports { get; set; }
+        //public DbSet<User> Users { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            var sqlitePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "Database");
-            Directory.CreateDirectory(sqlitePath);
-            var filename = Path.Combine(sqlitePath, _filename);
-            if (!File.Exists(filename))
-                File.Create(filename);
-            optionsBuilder.UseSqlite($"Data Source={filename}");
-            base.OnConfiguring(optionsBuilder);
-        }
+        //public LogisticsContext(string filename)
+        //{
+        //    _filename = filename;
+        //}
+
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    var sqlitePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "Database");
+        //    Directory.CreateDirectory(sqlitePath);
+        //    var filename = Path.Combine(sqlitePath, _filename);
+        //    if (!File.Exists(filename))
+        //        File.Create(filename);
+        //    optionsBuilder.UseSqlite($"Data Source={filename}");
+        //    base.OnConfiguring(optionsBuilder);
+        //}
     }
 }
