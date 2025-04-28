@@ -13,6 +13,7 @@ namespace BibliotekaMVP.Model
         public string? CustomerName { get; set; }
 
         public int StatusId { get; set; }
+        public string Status {  get; set; }
 
         public DateTime OrderDate { get; set; }
     }

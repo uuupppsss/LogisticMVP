@@ -29,34 +29,34 @@ namespace BibliotekaMVP.View
         public MainWindow()
         {
             InitializeComponent();
-            _context = new LogisticsContext("TestDataBase123456789");
-            try
-            {
-                _context.Database.EnsureCreated();
-            }
-            catch
-            {
-                RestartApplication();
-            }
+            _context = new LogisticsContext();
+            //try
+            //{
+            //    //_context.Database.EnsureCreated();
+            //}
+            //catch
+            //{
+            //    //RestartApplication();
+            //}
             LoadOrders();
             LoadProducts();
             LoadTransports();
             LoadRoutes();
         }
 
-        private void RestartApplication()
-        {
-            string exePath = Process.GetCurrentProcess().MainModule.FileName;
+        //private void RestartApplication()
+        //{
+        //    string exePath = Process.GetCurrentProcess().MainModule.FileName;
 
-            Process.Start(exePath);
+        //    Process.Start(exePath);
 
-            Application.Current.Shutdown();
-        }
+        //    Application.Current.Shutdown();
+        //}
 
         //заказы
         private async void LoadOrders(string searchTerm = null)
         {
-            var orders = await _context.Orders.ToListAsync();
+            var orders = await _context.GetOrders();
 
             if (!string.IsNullOrEmpty(searchTerm))
             {
@@ -92,8 +92,7 @@ namespace BibliotekaMVP.View
                     Status = StatusTextBox.Text
                 };
 
-                _context.Orders.Add(newOrder);
-                await _context.SaveChangesAsync();
+                await _context.AddOrder(newOrder);
                 LoadOrders();
                 ClearFields();
             }
@@ -115,7 +114,7 @@ namespace BibliotekaMVP.View
                     _selectedOrder.OrderDate = OrderDatePicker.SelectedDate ?? DateTime.Now;
                     _selectedOrder.Status = StatusTextBox.Text;
 
-                    await _context.SaveChangesAsync();
+                    await _context.UpdateOrder(_selectedOrder);
                     LoadOrders();
                     ClearFields();
                 }
@@ -131,8 +130,7 @@ namespace BibliotekaMVP.View
         {
             if (_selectedOrder != null)
             {
-                _context.Orders.Remove(_selectedOrder);
-                await _context.SaveChangesAsync();
+                await _context.DeleteOrder(_selectedOrder.Id);
                 LoadOrders();
                 ClearFields();
             }
@@ -155,7 +153,7 @@ namespace BibliotekaMVP.View
         //продукты
         private async void LoadProducts(string searchTerm = null)
         {
-            var products = await _context.Products.ToListAsync();
+            var products = await _context.GetProducts();
 
             if (!string.IsNullOrEmpty(searchTerm))
             {
@@ -191,8 +189,7 @@ namespace BibliotekaMVP.View
                     Quantity = int.Parse(QuantityTextBox.Text),
                     Price = decimal.Parse(PriceTextBox.Text)
                 };
-                _context.Products.Add(newProduct);
-                await _context.SaveChangesAsync();
+                await _context.AddProduct(newProduct);
                 LoadProducts();
                 ClearProductsFields();
             }
@@ -214,7 +211,7 @@ namespace BibliotekaMVP.View
                     _selectedProduct.Quantity = int.Parse(QuantityTextBox.Text);
                     _selectedProduct.Price = decimal.Parse(PriceTextBox.Text);
 
-                    await _context.SaveChangesAsync();
+                    await _context.UpdateProduct(_selectedProduct);
                     LoadProducts();
                     ClearProductsFields();
                 }
@@ -229,8 +226,7 @@ namespace BibliotekaMVP.View
         {
             if (_selectedProduct != null)
             {
-                _context.Products.Remove(_selectedProduct);
-                await _context.SaveChangesAsync();
+                await _context.DeleteProduct(_selectedProduct.Id)
                 LoadProducts();
                 ClearProductsFields();
             }
@@ -253,7 +249,7 @@ namespace BibliotekaMVP.View
         // Транспорт
         private async void LoadTransports(string searchTerm = null)
         {
-            var transports = await _context.Transports.ToListAsync();
+            var transports = await _context.GetTransports();
 
             if (!string.IsNullOrEmpty(searchTerm))
             {
@@ -295,8 +291,7 @@ namespace BibliotekaMVP.View
                     LicensePlate = LicensePlateTextBox.Text
                 };
 
-                _context.Transports.Add(newTransport);
-                await _context.SaveChangesAsync();
+                await _context.AddTransport(newTransport);
                 LoadTransports();
                 ClearTransportFields();
             }
@@ -318,7 +313,7 @@ namespace BibliotekaMVP.View
                     _selectedTransport.Year = int.Parse(YearTextBox.Text);
                     _selectedTransport.LicensePlate = LicensePlateTextBox.Text;
 
-                    await _context.SaveChangesAsync();
+                    await _context.UpdateTRansport(_selectedTransport);
                     LoadTransports();
                     ClearTransportFields();
                 }
@@ -333,8 +328,7 @@ namespace BibliotekaMVP.View
         {
             if (_selectedTransport != null)
             {
-                _context.Transports.Remove(_selectedTransport);
-                await _context.SaveChangesAsync();
+                await _context.DeleteTransport(_selectedTransport.Id);
                 LoadTransports();
                 ClearTransportFields();
             }
@@ -358,7 +352,7 @@ namespace BibliotekaMVP.View
         //маршруты
         private async void LoadRoutes(string searchTerm = null)
         {
-            var routes = await _context.Routes.ToListAsync();
+            var routes = await _context.GetRoutes();
 
             if (!string.IsNullOrEmpty(searchTerm))
             {
@@ -397,8 +391,7 @@ namespace BibliotekaMVP.View
                     TravelTime = double.Parse(TravelTimeTextBox.Text)
                 };
 
-                _context.Routes.Add(newRoute);
-                await _context.SaveChangesAsync();
+                await _context.AddRoutes(newRoute);
                 LoadRoutes();
                 ClearRouteFields();
             }
@@ -420,7 +413,7 @@ namespace BibliotekaMVP.View
                     _selectedRoute.Distance = double.Parse(DistanceTextBox.Text);
                     _selectedRoute.TravelTime = double.Parse(TravelTimeTextBox.Text);
 
-                    await _context.SaveChangesAsync();
+                    await _context.UpdateRoute(_selectedRoute);
                     LoadRoutes();
                     ClearRouteFields();
                 }
@@ -436,8 +429,7 @@ namespace BibliotekaMVP.View
         {
             if (_selectedRoute != null)
             {
-                _context.Routes.Remove(_selectedRoute);
-                await _context.SaveChangesAsync();
+                await _context.DeleteRoute(_selectedRoute.Id);
                 LoadRoutes();
                 ClearRouteFields();
             }
