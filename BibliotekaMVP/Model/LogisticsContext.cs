@@ -102,6 +102,29 @@ namespace BibliotekaMVP.Model
             }
         }
 
+        public async Task<List<string>> GetOrderStatuses()
+        {
+            try
+            {
+                var responce = await client.GetAsync($"Orders/Status");
+                if (!responce.IsSuccessStatusCode)
+                {
+                    //error
+                    return null;
+                }
+                else
+                {
+                    //success
+                    return await responce.Content.ReadFromJsonAsync<List<string>>();
+                }
+            }
+            catch
+            {
+                //error
+                return null;
+            }
+        }
+
         //TRANSPORT
         public async Task<List<Transport>> GetTransports()
         {
@@ -127,6 +150,7 @@ namespace BibliotekaMVP.Model
         {
             try
             {
+                
                 string json = JsonSerializer.Serialize(transport);
                 var responce = await client.PostAsync("Transports", new StringContent(json, Encoding.UTF8, "application/json"));
                 if (!responce.IsSuccessStatusCode)
@@ -210,6 +234,7 @@ namespace BibliotekaMVP.Model
         {
             try
             {
+                Client.SetToken(AuthManager.CurrentUser.Token);
                 string json = JsonSerializer.Serialize(route);
                 var responce = await client.PostAsync("Routes", new StringContent(json, Encoding.UTF8, "application/json"));
                 if (!responce.IsSuccessStatusCode)

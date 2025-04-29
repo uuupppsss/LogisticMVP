@@ -64,20 +64,30 @@ namespace BibliotekaMVP.View
             }
 
             OrdersDataGrid.ItemsSource = orders;
+            var statuses = await _context.GetOrderStatuses();
+            StatusListBox.ItemsSource = statuses;
         }
 
         private void OrdersDataGrid_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            if (OrdersDataGrid.SelectedItem != null)
+           
+            try
             {
-                _selectedOrder = (Order)OrdersDataGrid.SelectedItem;
-
-                if (_selectedOrder != null)
+                if (OrdersDataGrid.SelectedItem != null)
                 {
-                    CustomerNameTextBox.Text = _selectedOrder.CustomerName;
-                    OrderDatePicker.SelectedDate = _selectedOrder.OrderDate;
-                    StatusTextBox.Text = _selectedOrder.Status;
+                    _selectedOrder = (Order)OrdersDataGrid.SelectedItem;
+
+                    if (_selectedOrder != null)
+                    {
+                        CustomerNameTextBox.Text = _selectedOrder.CustomerName;
+                        OrderDatePicker.SelectedDate = _selectedOrder.OrderDate;
+                        StatusListBox.SelectedItem = _selectedOrder.Status;
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
         }
 
@@ -89,12 +99,16 @@ namespace BibliotekaMVP.View
                 {
                     CustomerName = CustomerNameTextBox.Text,
                     OrderDate = OrderDatePicker.SelectedDate ?? DateTime.Now,
-                    Status = StatusTextBox.Text
+                    Status=(string)StatusListBox.SelectedItem
                 };
 
-                await _context.AddOrder(newOrder);
-                LoadOrders();
-                ClearFields();
+                if(newOrder.CustomerName!=null&&newOrder.Status!=null)
+                {
+                    await _context.AddOrder(newOrder);
+                    LoadOrders();
+                    ClearFields();
+                }
+                
             }
 
             catch (Exception ex)
@@ -106,46 +120,63 @@ namespace BibliotekaMVP.View
 
         private async void EditOrder_Click(object sender, RoutedEventArgs e)
         {
-            if (_selectedOrder != null)
+            try
             {
-                try
+
+                if (_selectedOrder != null && CustomerNameTextBox.Text != null && StatusListBox.SelectedItem != null)
                 {
                     _selectedOrder.CustomerName = CustomerNameTextBox.Text;
                     _selectedOrder.OrderDate = OrderDatePicker.SelectedDate ?? DateTime.Now;
-                    _selectedOrder.Status = StatusTextBox.Text;
-
+                    _selectedOrder.Status = (string)StatusListBox.SelectedItem;
                     await _context.UpdateOrder(_selectedOrder);
                     LoadOrders();
                     ClearFields();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
+
                 }
                 
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
         }
 
         private async void DeleteOrder_Click(object sender, RoutedEventArgs e)
         {
-            if (_selectedOrder != null)
+            
+            try
             {
-                await _context.DeleteOrder(_selectedOrder.Id);
-                LoadOrders();
-                ClearFields();
+                if (_selectedOrder != null)
+                {
+                    await _context.DeleteOrder(_selectedOrder.Id);
+                    LoadOrders();
+                    ClearFields();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
         }
 
         private void SearchButton_Click(object sender, RoutedEventArgs e)
         {
-            LoadOrders(SearchOrderTextBox.Text);
+            
+            try
+            {
+                LoadOrders(SearchOrderTextBox.Text);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void ClearFields()
         {
             CustomerNameTextBox.Clear();
             OrderDatePicker.SelectedDate = null;
-            StatusTextBox.Clear();
+            StatusListBox.SelectedItem = null;
             OrdersDataGrid.SelectedItem = null;
             _selectedOrder = null;
         }
@@ -165,17 +196,24 @@ namespace BibliotekaMVP.View
 
         private void ProductsDataGrid_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            if (ProductsDataGrid.SelectedItem != null)
+            try
             {
-                _selectedProduct = (Product)ProductsDataGrid.SelectedItem;
-
-                if (_selectedProduct != null)
+                if (ProductsDataGrid.SelectedItem != null)
                 {
-                    ProductNameTextBox.Text = _selectedProduct.ProductName;
-                    QuantityTextBox.Text = _selectedProduct.Quantity.ToString();
+                    _selectedProduct = (Product)ProductsDataGrid.SelectedItem;
 
-                    PriceTextBox.Text = _selectedProduct.Price.ToString("F2") + "рублей";
+                    if (_selectedProduct != null)
+                    {
+                        ProductNameTextBox.Text = _selectedProduct.ProductName;
+                        QuantityTextBox.Text = _selectedProduct.Quantity.ToString();
+
+                        PriceTextBox.Text = _selectedProduct.Price.ToString("F2") + "рублей";
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
         }
 
@@ -189,9 +227,12 @@ namespace BibliotekaMVP.View
                     Quantity = int.Parse(QuantityTextBox.Text),
                     Price = decimal.Parse(PriceTextBox.Text)
                 };
-                await _context.AddProduct(newProduct);
-                LoadProducts();
-                ClearProductsFields();
+                if (newProduct.ProductName!=null)
+                {
+                    await _context.AddProduct(newProduct);
+                    LoadProducts();
+                    ClearProductsFields();
+                }
             }
             catch (Exception ex)
             {
@@ -203,38 +244,56 @@ namespace BibliotekaMVP.View
 
         private async void EditProduct_Click(object sender, RoutedEventArgs e)
         {
-            if (_selectedProduct != null)
+           
+            try
             {
-                try
+                if (_selectedProduct != null&& ProductNameTextBox.Text!=null)
                 {
                     _selectedProduct.ProductName = ProductNameTextBox.Text;
                     _selectedProduct.Quantity = int.Parse(QuantityTextBox.Text);
                     _selectedProduct.Price = decimal.Parse(PriceTextBox.Text);
-
                     await _context.UpdateProduct(_selectedProduct);
                     LoadProducts();
                     ClearProductsFields();
                 }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
+
+                ;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
         }
 
         private async void DeleteProduct_Click(object sender, RoutedEventArgs e)
         {
-            if (_selectedProduct != null)
+            
+            try
             {
-                await _context.DeleteProduct(_selectedProduct.Id);
-                LoadProducts();
-                ClearProductsFields();
+                if (_selectedProduct != null)
+                {
+                    await _context.DeleteProduct(_selectedProduct.Id);
+                    LoadProducts();
+                    ClearProductsFields();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
         }
 
         private void SearchProductButton_Click(object sender, RoutedEventArgs e)
         {
-            LoadProducts(SearchProductTextBox.Text);
+            
+            try
+            {
+                LoadProducts(SearchProductTextBox.Text);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void ClearProductsFields()
@@ -265,17 +324,25 @@ namespace BibliotekaMVP.View
 
         private void TransportDataGrid_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            if (TransportDataGrid.SelectedItem != null)
+            
+            try
             {
-                _selectedTransport = (Transport)TransportDataGrid.SelectedItem;
-
-                if (_selectedTransport != null)
+                if (TransportDataGrid.SelectedItem != null)
                 {
-                    BrandTextBox.Text = _selectedTransport.Brand;
-                    ModelTextBox.Text = _selectedTransport.Model;
-                    YearTextBox.Text = _selectedTransport.Year.ToString();
-                    LicensePlateTextBox.Text = _selectedTransport.LicensePlate;
+                    _selectedTransport = (Transport)TransportDataGrid.SelectedItem;
+
+                    if (_selectedTransport != null)
+                    {
+                        BrandTextBox.Text = _selectedTransport.Brand;
+                        ModelTextBox.Text = _selectedTransport.Model;
+                        YearTextBox.Text = _selectedTransport.Year.ToString();
+                        LicensePlateTextBox.Text = _selectedTransport.LicensePlate;
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
         }
 
@@ -291,9 +358,12 @@ namespace BibliotekaMVP.View
                     LicensePlate = LicensePlateTextBox.Text
                 };
 
-                await _context.AddTransport(newTransport);
-                LoadTransports();
-                ClearTransportFields();
+                if(newTransport.Model!=null&&newTransport.Brand!=null&&newTransport.LicensePlate!=null)
+                {
+                    await _context.AddTransport(newTransport);
+                    LoadTransports();
+                    ClearTransportFields();
+                }
             }
             catch (Exception ex)
             {
@@ -304,23 +374,25 @@ namespace BibliotekaMVP.View
 
         private async void EditTransport_Click(object sender, RoutedEventArgs e)
         {
-            if (_selectedTransport != null)
+           
+            try
             {
-                try
+                if (_selectedTransport != null&& BrandTextBox.Text != null && ModelTextBox.Text != null && LicensePlateTextBox.Text != null)
                 {
                     _selectedTransport.Brand = BrandTextBox.Text;
                     _selectedTransport.Model = ModelTextBox.Text;
                     _selectedTransport.Year = int.Parse(YearTextBox.Text);
                     _selectedTransport.LicensePlate = LicensePlateTextBox.Text;
-
                     await _context.UpdateTRansport(_selectedTransport);
                     LoadTransports();
                     ClearTransportFields();
                 }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
+
+               
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
         }
 
@@ -336,7 +408,15 @@ namespace BibliotekaMVP.View
 
         private void SearchTransportButton_Click(object sender, RoutedEventArgs e)
         {
-            LoadTransports(SearchTransportTextBox.Text);
+            
+            try
+            {
+                LoadTransports(SearchTransportTextBox.Text);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void ClearTransportFields()
@@ -361,21 +441,36 @@ namespace BibliotekaMVP.View
             }
 
             RouteDataGrid.ItemsSource = routes;
+            var orders=await _context.GetOrders();
+            List<int> ordersIds=orders.Select(r => r.Id).ToList();
+            OrderNumbers.ItemsSource= ordersIds;
+
+            var transports=await _context.GetTransports();
+            List<int> transportIds=transports.Select(r => r.Id).ToList();
+            TransportNumbers.ItemsSource= transportIds;
         }
 
         private void RouteDataGrid_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            if (RouteDataGrid.SelectedItem!=null)
+            
+            try
             {
-                _selectedRoute = (Route)RouteDataGrid.SelectedItem;
-
-                if (_selectedRoute != null)
+                if (RouteDataGrid.SelectedItem != null)
                 {
-                    StartPointTextBox.Text = _selectedRoute.StartPoint;
-                    EndPointTextBox.Text = _selectedRoute.EndPoint;
-                    DistanceTextBox.Text = _selectedRoute.Distance.ToString();
-                    TravelTimeTextBox.Text = _selectedRoute.TravelTime.ToString();
+                    _selectedRoute = (Route)RouteDataGrid.SelectedItem;
+
+                    if (_selectedRoute != null)
+                    {
+                        StartPointTextBox.Text = _selectedRoute.StartPoint;
+                        EndPointTextBox.Text = _selectedRoute.EndPoint;
+                        DistanceTextBox.Text = _selectedRoute.Distance.ToString();
+                        TravelTimeTextBox.Text = _selectedRoute.TravelTime.ToString();
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
         }
 
@@ -388,12 +483,17 @@ namespace BibliotekaMVP.View
                     StartPoint = StartPointTextBox.Text,
                     EndPoint = EndPointTextBox.Text,
                     Distance = double.Parse(DistanceTextBox.Text),
-                    TravelTime = double.Parse(TravelTimeTextBox.Text)
+                    TravelTime = double.Parse(TravelTimeTextBox.Text),
+                    IdTransport = (int)TransportNumbers.SelectedItem,
+                    IdOrder=(int)OrderNumbers.SelectedItem,
                 };
 
-                await _context.AddRoutes(newRoute);
-                LoadRoutes();
-                ClearRouteFields();
+                if (newRoute.StartPoint!=null&&newRoute.EndPoint!=null&&newRoute.IdTransport!=0&&newRoute.IdOrder!=0)
+                {
+                    await _context.AddRoutes(newRoute);
+                    LoadRoutes();
+                    ClearRouteFields();
+                }
             }
             catch (Exception ex)
             {
@@ -404,40 +504,59 @@ namespace BibliotekaMVP.View
 
         private async void EditRoute_Click(object sender, RoutedEventArgs e)
         {
-            if (_selectedRoute != null)
+           
+            try
             {
-                try
+                if (_selectedRoute != null&& StartPointTextBox.Text!=null&& EndPointTextBox.Text!=null&&TransportNumbers.SelectedItem!=null&&OrderNumbers.SelectedItem!=null)
                 {
                     _selectedRoute.StartPoint = StartPointTextBox.Text;
                     _selectedRoute.EndPoint = EndPointTextBox.Text;
                     _selectedRoute.Distance = double.Parse(DistanceTextBox.Text);
                     _selectedRoute.TravelTime = double.Parse(TravelTimeTextBox.Text);
+                    _selectedRoute.IdTransport = (int)TransportNumbers.SelectedItem;
+                    _selectedRoute.IdOrder = (int)OrderNumbers.SelectedItem;
 
                     await _context.UpdateRoute(_selectedRoute);
                     LoadRoutes();
                     ClearRouteFields();
+
                 }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
-                
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
         }
 
         private async void DeleteRoute_Click(object sender, RoutedEventArgs e)
         {
-            if (_selectedRoute != null)
+           
+            try
             {
-                await _context.DeleteRoute(_selectedRoute.Id);
-                LoadRoutes();
-                ClearRouteFields();
+                if (_selectedRoute != null)
+                {
+                    await _context.DeleteRoute(_selectedRoute.Id);
+                    LoadRoutes();
+                    ClearRouteFields();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
         }
 
         private void SearchRouteButton_Click(object sender, RoutedEventArgs e)
         {
-            LoadRoutes(SearchRouteTextBox.Text);
+            
+            try
+            {
+                LoadRoutes(SearchRouteTextBox.Text);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void ClearRouteFields()

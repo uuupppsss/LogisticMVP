@@ -8,6 +8,10 @@ using Microsoft.EntityFrameworkCore;
 using ApiMvp.Model;
 using System.Security.Cryptography;
 using System.Text;
+using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.IdentityModel.Tokens;
+using System.Data;
 
 namespace ApiMvp.Controllers
 {
@@ -20,58 +24,6 @@ namespace ApiMvp.Controllers
         public UsersController(LogisticMvpContext context)
         {
             _context = context;
-        }
-
-        // GET: api/Users
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
-        {
-            return await _context.Users.ToListAsync();
-        }
-
-        // GET: api/Users/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUser(int id)
-        {
-            var user = await _context.Users.FindAsync(id);
-
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            return user;
-        }
-
-        // PUT: api/Users/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser(int id, User user)
-        {
-            if (id != user.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(user).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!UserExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
         }
 
         // POST: api/Users
@@ -101,34 +53,38 @@ namespace ApiMvp.Controllers
             }
             return result.ToString();
         }
-        // DELETE: api/Users/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(int id)
-        {
-            var user = await _context.Users.FindAsync(id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            _context.Users.Remove(user);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        private bool UserExists(int id)
-        {
-            return _context.Users.Any(e => e.Id == id);
-        }
 
         [HttpGet ("SignIn/{username}/{hashPassword}")]
-        public async Task<ActionResult<User>> SignIn(string username, string hashPassword)
+        public async Task<ActionResult<UserDTO>> SignIn(string username, string hashPassword)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Name == username);
             if (user == null) return NotFound();
             if (hashPassword != user.Password) return Unauthorized();
-            return Ok(user);
+            var claims = new List<Claim> {
+                //Кладём Id (если нужно)
+                new Claim(ClaimValueTypes.Integer32, user.Id.ToString()),
+                //Кладём роль
+                new Claim(ClaimTypes.Name, user.Name)
+            };
+            var jwt = new JwtSecurityToken(
+                   issuer: AuthOptions.ISSUER,
+                   audience: AuthOptions.AUDIENCE,
+                   //кладём полезную нагрузку
+                   claims: claims,
+                   //устанавливаем время жизни токена 30 минуты
+                   expires: DateTime.UtcNow.Add(TimeSpan.FromMinutes(30)),
+                   signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
+
+            string token = new JwtSecurityTokenHandler().WriteToken(jwt);
+
+            UserDTO result = new UserDTO()
+            {
+                Id = user.Id,
+                Name = user.Name,
+                Password = user.Password,
+                Token = token
+            };
+            return Ok(result);
         }
     }
 }

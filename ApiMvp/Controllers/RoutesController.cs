@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ApiMvp.Model;
 using Route = ApiMvp.Model.Route;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ApiMvp.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class RoutesController : ControllerBase
@@ -23,9 +25,23 @@ namespace ApiMvp.Controllers
 
         // GET: api/Routes
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Route>>> GetRoutes()
+        public async Task<ActionResult<IEnumerable<RouteDTO>>> GetRoutes()
         {
-            return await _context.Routes.ToListAsync();
+            List<RouteDTO> result = new();
+           foreach(var r in _context.Routes)
+           {
+                result.Add(new RouteDTO()
+                {
+                    Id=r.Id,
+                    StartPoint = r.StartPoint,
+                    EndPoint = r.EndPoint,
+                    TravelTime= r.TravelTime,
+                    Distance=r.Distance,
+                    IdOrder=r.IdOrder,
+                    IdTransport=r.IdTransport,
+                });
+           }
+           return Ok(result);
         }
 
         // GET: api/Routes/5
@@ -45,13 +61,23 @@ namespace ApiMvp.Controllers
         // PUT: api/Routes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutRoute(int id, Route route)
+        public async Task<IActionResult> PutRoute(int id, RouteDTO sent_route)
         {
-            if (id != route.Id)
+            if (id != sent_route.Id)
             {
                 return BadRequest();
             }
 
+            Route route = new Route()
+            {
+                Id=sent_route.Id,
+                StartPoint=sent_route.StartPoint,
+                EndPoint=sent_route.EndPoint,
+                Distance=sent_route.Distance,
+                TravelTime=sent_route.TravelTime,
+                IdOrder=sent_route.IdOrder,
+                IdTransport=sent_route.IdTransport,
+            };
             _context.Entry(route).State = EntityState.Modified;
 
             try
@@ -76,12 +102,22 @@ namespace ApiMvp.Controllers
         // POST: api/Routes
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Route>> PostRoute(Route route)
+        public async Task<ActionResult> PostRoute(RouteDTO sent_route)
         {
+            Route route = new Route()
+            {
+                StartPoint = sent_route.StartPoint,
+                EndPoint = sent_route.EndPoint,
+                Distance = sent_route.Distance,
+                TravelTime = sent_route.TravelTime,
+                IdOrder = sent_route.IdOrder,
+                IdTransport = sent_route.IdTransport,
+            };
             _context.Routes.Add(route);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetRoute", new { id = route.Id }, route);
+            if (_context.Routes.Contains(route)) return Ok();
+            else return NoContent();
         }
 
         // DELETE: api/Routes/5

@@ -9,13 +9,17 @@
     <TabControl>
         <TabItem Header="Заказы">
             <Grid>
-                <Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <!--<Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
+                </Grid.RowDefinitions>-->
 
 
-                <DataGrid x:Name="OrdersDataGrid" AutoGenerateColumns="False" Grid.Row="1" SelectionChanged="OrdersDataGrid_SelectionChanged" Grid.ColumnSpan="2">
+                <DataGrid x:Name="OrdersDataGrid" AutoGenerateColumns="False" SelectionChanged="OrdersDataGrid_SelectionChanged" >
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="ID" Binding="{Binding Id}" />
                         <DataGridTextColumn Header="Имя клиента" Binding="{Binding CustomerName}" />
@@ -24,7 +28,7 @@
                     </DataGrid.Columns>
                 </DataGrid>
 
-                <StackPanel Orientation="Vertical" Margin="10" >
+                <StackPanel Orientation="Vertical" Margin="10,10,10,10" Grid.Column="1" >
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="Поиск:"/>
                         <TextBox x:Name="SearchOrderTextBox" Width="200"/>
@@ -35,24 +39,30 @@
                     <TextBlock Text="Дата заказа:"/>
                     <DatePicker x:Name="OrderDatePicker"/>
                     <TextBlock Text="Статус:"/>
-                    <TextBox x:Name="StatusTextBox"/>
+                    <ComboBox x:Name="StatusListBox"/>
 
-                    <StackPanel Orientation="Horizontal">
+                    <StackPanel >
                         <Button Content="Добавить заказ" Click="AddOrder_Click" Margin="5"/>
                         <Button Content="Редактировать заказ" Click="EditOrder_Click" Margin="5"/>
                         <Button Content="Удалить заказ" Click="DeleteOrder_Click" Margin="5"/>
+                        <!--<DataGrid x:Name="ProductsList">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="ID товара" Binding="{Binding Id}" />
+                                <DataGridTextColumn Header="Название товара" Binding="{Binding ProductName}" />
+                            </DataGrid.Columns>
+                        </DataGrid>-->
                     </StackPanel>
                 </StackPanel>
             </Grid>
         </TabItem>
         <TabItem Header="Товары">
             <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
 
-                <DataGrid x:Name="ProductsDataGrid" AutoGenerateColumns="False" Grid.Row="1" SelectionChanged="ProductsDataGrid_SelectionChanged" >
+                <DataGrid x:Name="ProductsDataGrid" AutoGenerateColumns="False" SelectionChanged="ProductsDataGrid_SelectionChanged" >
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="ID" Binding="{Binding Id}" />
                         <DataGridTextColumn Header="Название товара" Binding="{Binding ProductName}" />
@@ -61,7 +71,7 @@
                     </DataGrid.Columns>
                 </DataGrid>
 
-                <StackPanel Orientation="Vertical" Margin="10" >
+                <StackPanel Orientation="Vertical" Margin="10" Grid.Column="1">
                     <StackPanel Orientation="Horizontal" Margin="10">
                         <TextBlock Text="Поиск:"/>
                         <TextBox x:Name="SearchProductTextBox" Width="200" Margin="0,0,0,10"/>
@@ -74,7 +84,7 @@
                     <TextBlock Text="Цена:"/>
                     <TextBox x:Name="PriceTextBox"/>
 
-                    <StackPanel Orientation="Horizontal">
+                    <StackPanel >
                         <Button Content="Добавить товар" Click="AddProduct_Click" Margin="5"/>
                         <Button Content="Редактировать товар" Click="EditProduct_Click" Margin="5"/>
                         <Button Content="Удалить товар" Click="DeleteProduct_Click" Margin="5"/>
@@ -85,12 +95,12 @@
         </TabItem>
         <TabItem Header="Транспорт">
             <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
 
-                <DataGrid x:Name="TransportDataGrid" AutoGenerateColumns="False" Grid.Row="1" SelectionChanged="TransportDataGrid_SelectionChanged">
+                <DataGrid x:Name="TransportDataGrid" AutoGenerateColumns="False" SelectionChanged="TransportDataGrid_SelectionChanged">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="ID" Binding="{Binding Id}" />
                         <DataGridTextColumn Header="Марка" Binding="{Binding Brand}" />
@@ -100,7 +110,7 @@
                     </DataGrid.Columns>
                 </DataGrid>
 
-                <StackPanel Orientation="Vertical" Margin="10" Grid.RowSpan="1">
+                <StackPanel Orientation="Vertical" Margin="10" Grid.Column="1">
                     <StackPanel Orientation="Horizontal" Margin="10">
                         <TextBlock Text="Поиск:"/>
                         <TextBox x:Name="SearchTransportTextBox" Width="200" Margin="0,0,0,10"/>
@@ -115,7 +125,7 @@
                     <TextBlock Text="Номерной знак:"/>
                     <TextBox x:Name="LicensePlateTextBox"/>
 
-                    <StackPanel Orientation="Horizontal">
+                    <StackPanel >
                         <Button Content="Добавить транспорт" Click="AddTransport_Click" Margin="5"/>
                         <Button Content="Редактировать транспорт" Click="EditTransport_Click" Margin="5"/>
                         <Button Content="Удалить транспорт" Click="DeleteTransport_Click" Margin="5"/>
@@ -126,22 +136,24 @@
 
         <TabItem Header="Маршруты">
             <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
 
-                <DataGrid x:Name="RouteDataGrid" AutoGenerateColumns="False" Grid.Row="1" SelectionChanged="RouteDataGrid_SelectionChanged">
+                <DataGrid x:Name="RouteDataGrid" AutoGenerateColumns="False" SelectionChanged="RouteDataGrid_SelectionChanged">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="ID" Binding="{Binding Id}" />
                         <DataGridTextColumn Header="Начальная точка" Binding="{Binding StartPoint}" />
                         <DataGridTextColumn Header="Конечная точка" Binding="{Binding EndPoint}" />
                         <DataGridTextColumn Header="Расстояние (км)" Binding="{Binding Distance}" />
                         <DataGridTextColumn Header="Время в пути (ч)" Binding="{Binding TravelTime}" />
+                        <DataGridTextColumn Header="Транспорт" Binding="{Binding IdTransport}" />
+                        <DataGridTextColumn Header="Заказ" Binding="{Binding IdOrder}" />
                     </DataGrid.Columns>
                 </DataGrid>
 
-                <StackPanel Orientation="Vertical" Margin="10" Grid.RowSpan="1">
+                <StackPanel Orientation="Vertical" Margin="10" Grid.Column="1">
                     <StackPanel Orientation="Horizontal" Margin="10">
                         <TextBlock Text="Поиск:"/>
                         <TextBox x:Name="SearchRouteTextBox" Width="200" Margin="0,0,0,10"/>
@@ -155,11 +167,16 @@
                     <TextBox x:Name="DistanceTextBox"/>
                     <TextBlock Text="Время в пути (ч):"/>
                     <TextBox x:Name="TravelTimeTextBox"/>
+                    <TextBlock Text="Номер заказа"/>
+                    <ComboBox x:Name="OrderNumbers"/>
+                    <TextBlock Text="Номер транспорта"/>
+                    <ComboBox x:Name="TransportNumbers"/>
 
-                    <StackPanel Orientation="Horizontal">
+                    <StackPanel>
                         <Button Content="Добавить маршрут" Click="AddRoute_Click" Margin="5"/>
                         <Button Content="Редактировать маршрут" Click="EditRoute_Click" Margin="5"/>
                         <Button Content="Удалить маршрут" Click="DeleteRoute_Click" Margin="5"/>
+                       
                     </StackPanel>
                 </StackPanel>
             </Grid>

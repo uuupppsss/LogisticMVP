@@ -13,9 +13,12 @@ namespace BibliotekaMVP.Model
         public string? CustomerName { get; set; }
 
         public int StatusId { get; set; }
-        public string Status {  get; set; }
+
+        public string? Status {  get; set; }
 
         public DateTime OrderDate { get; set; }
+
+        //public List<Product>? Products { get; set; } = null;
     }
 
     public class Product
@@ -28,10 +31,6 @@ namespace BibliotekaMVP.Model
 
         public string ProductName { get; set; } = null!;
 
-        //public override string ToString()
-        //{
-        //    return "ID: " + Id + " | Название: " + ProductName;
-        //}
     }
 
     public class Route
@@ -70,5 +69,7 @@ namespace BibliotekaMVP.Model
         public string Name { get; set; } = null!;
 
         public string Password { get; set; } = null!;
+        public string Token { get; set; } = null!;
     }
+  
 }

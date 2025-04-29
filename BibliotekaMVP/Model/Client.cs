@@ -26,7 +26,14 @@ namespace BibliotekaMVP.Model
 
         public static void SetToken(string token)
         {
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            try
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+            catch(Exception ex)
+            {
+
+            }
         }
     }
 }
