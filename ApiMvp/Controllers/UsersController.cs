@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ApiMvp.Model;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace ApiMvp.Controllers
 {
@@ -75,14 +77,30 @@ namespace ApiMvp.Controllers
         // POST: api/Users
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<User>> PostUser(User user)
+        public async Task<ActionResult> PostUser(User user)
         {
+            user.Password = HashMethod(user.Password);
+            user.Name = HashMethod(user.Name);
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetUser", new { id = user.Id }, user);
+            if (await _context.Users.ContainsAsync(user)) return Ok();
+            else return NoContent();
         }
 
+        private string HashMethod(string password)
+        {
+            var bytes = Encoding.ASCII.GetBytes(password);
+            StringBuilder result = new StringBuilder();
+            using (var md5 = MD5.Create())
+            using (var ms = new MemoryStream(bytes))
+            {
+                var hash = md5.ComputeHash(ms);
+                foreach (var b in hash)
+                    result.Append(b.ToString("x2"));
+            }
+            return result.ToString();
+        }
         // DELETE: api/Users/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
@@ -102,6 +120,15 @@ namespace ApiMvp.Controllers
         private bool UserExists(int id)
         {
             return _context.Users.Any(e => e.Id == id);
+        }
+
+        [HttpGet ("SignIn/{username}/{hashPassword}")]
+        public async Task<ActionResult<User>> SignIn(string username, string hashPassword)
+        {
+            var user= await _context.Users.FindAsync(username);
+            if (user == null) return NotFound();
+            if (hashPassword != user.Password) return Unauthorized();
+            return Ok(user);
         }
     }
 }

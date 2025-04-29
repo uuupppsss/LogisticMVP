@@ -22,9 +22,20 @@ namespace ApiMvp.Controllers
 
         // GET: api/Orders
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Order>>> GetOrders()
+        public async Task<ActionResult<List<OrderDTO>>> GetOrders()
         {
-            return await _context.Orders.ToListAsync();
+            List<OrderDTO> result = new();
+            foreach (var order in _context.Orders)
+            {
+                result.Add(new OrderDTO()
+                {
+                    Id = order.Id,
+                    StatusId = order.StatusId,
+                    CustomerName = order.CustomerName,
+                    OrderDate = order.OrderDate
+                });
+            }
+            return Ok(result);
         }
 
         // GET: api/Orders/5
@@ -44,7 +55,7 @@ namespace ApiMvp.Controllers
         // PUT: api/Orders/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutOrder(int id, Order order)
+        public async Task<ActionResult> PutOrder(int id, OrderDTO order)
         {
             if (id != order.Id)
             {
@@ -75,8 +86,15 @@ namespace ApiMvp.Controllers
         // POST: api/Orders
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Order>> PostOrder(Order order)
+        public async Task<ActionResult> PostOrder(OrderDTO sent_order)
         {
+            Order order = new Order()
+            {
+                Id=sent_order.Id,
+                CustomerName=sent_order.CustomerName,
+                OrderDate=sent_order.OrderDate,
+                StatusId=sent_order.StatusId
+            };
             _context.Orders.Add(order);
             await _context.SaveChangesAsync();
 
@@ -85,7 +103,7 @@ namespace ApiMvp.Controllers
 
         // DELETE: api/Orders/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteOrder(int id)
+        public async Task<ActionResult> DeleteOrder(int id)
         {
             var order = await _context.Orders.FindAsync(id);
             if (order == null)

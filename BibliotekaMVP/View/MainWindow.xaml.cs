@@ -226,7 +226,7 @@ namespace BibliotekaMVP.View
         {
             if (_selectedProduct != null)
             {
-                await _context.DeleteProduct(_selectedProduct.Id)
+                await _context.DeleteProduct(_selectedProduct.Id);
                 LoadProducts();
                 ClearProductsFields();
             }

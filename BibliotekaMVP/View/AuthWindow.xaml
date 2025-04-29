@@ -13,6 +13,5 @@
         <Label Content="Пароль"/>
         <PasswordBox x:Name="PasswordBox"/>
         <Button Content="Войти" Click="SignInClick"/>
-        <Button Content="Регистрация" Click="SignUpClick"/>
     </StackPanel>
 </Window>

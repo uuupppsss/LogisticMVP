@@ -38,9 +38,9 @@ namespace BibliotekaMVP.View
             }
         }
 
-        private void SignUpClick(object sender, RoutedEventArgs e)
-        {
-            auth.SignUp(UsernameTextBox.Text, PasswordBox.Password);
-        }
+        //private void SignUpClick(object sender, RoutedEventArgs e)
+        //{
+        //    auth.SignUp(UsernameTextBox.Text, PasswordBox.Password);
+        //}
     }
 }

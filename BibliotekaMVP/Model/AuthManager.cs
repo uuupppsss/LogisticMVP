@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -23,30 +24,24 @@ namespace BibliotekaMVP.Model
             {
                 string hashPwd = HashClass.HashMethod(password);
                 var responce = await client.GetAsync($"SignIn/{username}/{hashPwd}");
+                if (!responce.IsSuccessStatusCode)
+                {
+                    //error
+                    CurrentUser = null;
+                }
+                else
+                {
+                    //success
+                    CurrentUser = await responce.Content.ReadFromJsonAsync<User>();
+                }
+
             }
             catch
             {
-
+                //error
+                CurrentUser = null;
             }
           
-        }
-
-        public async void SignUp(string username, string password)
-        {
-            try
-            {
-
-            }
-            catch
-            {
-
-            }
-            _context.Users.Add(new User()
-            {
-                Username = username,
-                Password = HashClass.HashMethod(password)
-            });
-            await _context.SaveChangesAsync();
         }
     }
 }
