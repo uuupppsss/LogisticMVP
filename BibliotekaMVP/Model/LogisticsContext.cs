@@ -13,18 +13,12 @@ namespace BibliotekaMVP.Model
 {
     public class LogisticsContext
     {
-        private HttpClient client;
-        public LogisticsContext()
-        {
-            client = Client.HttpClient;
-        }
-
         //ORDERS    
         public async Task<List<Order>> GetOrders()
         {
             try
             {
-                var responce = await client.GetAsync("Orders");
+                var responce = await Client.HttpClient.GetAsync("Orders");
                 if (!responce.IsSuccessStatusCode)
                 {
                     return null;
@@ -45,7 +39,7 @@ namespace BibliotekaMVP.Model
             try
             {
                 string json=JsonSerializer.Serialize(order);
-                var responce = await client.PostAsync("Orders", new StringContent(json, Encoding.UTF8, "application/json"));
+                var responce = await Client.HttpClient.PostAsync("Orders", new StringContent(json, Encoding.UTF8, "application/json"));
                 if (!responce.IsSuccessStatusCode)
                 {
                     //error
@@ -65,7 +59,7 @@ namespace BibliotekaMVP.Model
         {
             try
             {
-                var responce = await client.DeleteAsync($"Orders/{order_id}");
+                var responce = await Client.HttpClient.DeleteAsync($"Orders/{order_id}");
                 if (!responce.IsSuccessStatusCode)
                 {
                     //error
@@ -86,7 +80,7 @@ namespace BibliotekaMVP.Model
             try
             {
                 string json = JsonSerializer.Serialize(order);
-                var responce = await client.PutAsync($"Orders/{order.Id}", new StringContent(json, Encoding.UTF8, "application/json"));
+                var responce = await Client.HttpClient.PutAsync($"Orders/{order.Id}", new StringContent(json, Encoding.UTF8, "application/json"));
                 if (!responce.IsSuccessStatusCode)
                 {
                     //error
@@ -106,7 +100,7 @@ namespace BibliotekaMVP.Model
         {
             try
             {
-                var responce = await client.GetAsync($"Orders/Status");
+                var responce = await Client.HttpClient.GetAsync($"Orders/Status");
                 if (!responce.IsSuccessStatusCode)
                 {
                     //error
@@ -130,7 +124,7 @@ namespace BibliotekaMVP.Model
         {
             try
             {
-                var responce = await client.GetAsync("Transports");
+                var responce = await Client.HttpClient.GetAsync("Transports");
                 if (!responce.IsSuccessStatusCode)
                 {
                     return null;
@@ -152,7 +146,7 @@ namespace BibliotekaMVP.Model
             {
                 
                 string json = JsonSerializer.Serialize(transport);
-                var responce = await client.PostAsync("Transports", new StringContent(json, Encoding.UTF8, "application/json"));
+                var responce = await Client.HttpClient.PostAsync("Transports", new StringContent(json, Encoding.UTF8, "application/json"));
                 if (!responce.IsSuccessStatusCode)
                 {
                     //error
@@ -172,7 +166,7 @@ namespace BibliotekaMVP.Model
         {
             try
             {
-                var responce = await client.DeleteAsync($"Transports/{transport_id}");
+                var responce = await Client.HttpClient.DeleteAsync($"Transports/{transport_id}");
                 if (!responce.IsSuccessStatusCode)
                 {
                     //error
@@ -193,7 +187,7 @@ namespace BibliotekaMVP.Model
             try
             {
                 string json = JsonSerializer.Serialize(transport);
-                var responce = await client.PutAsync($"Transports/{transport.Id}", new StringContent(json, Encoding.UTF8, "application/json"));
+                var responce = await Client.HttpClient.PutAsync($"Transports/{transport.Id}", new StringContent(json, Encoding.UTF8, "application/json"));
                 if (!responce.IsSuccessStatusCode)
                 {
                     //error
@@ -214,15 +208,16 @@ namespace BibliotekaMVP.Model
         {
             try
             {
-                var responce = await client.GetAsync("Routes");
-                if (!responce.IsSuccessStatusCode)
-                {
-                    return null;
-                }
-                else
-                {
-                    return await responce.Content.ReadFromJsonAsync<List<Route>>();
-                }
+                //var responce = await client.GetAsync("Routes");
+                //if (!responce.IsSuccessStatusCode)
+                //{
+                //    return null;
+                //}
+                //else
+                //{
+                //    return await responce.Content.ReadFromJsonAsync<List<Route>>();
+                //}
+                return await Client.HttpClient.GetFromJsonAsync<List<Route>>("Routes");
             }
             catch
             {
@@ -234,9 +229,9 @@ namespace BibliotekaMVP.Model
         {
             try
             {
-                Client.SetToken(AuthManager.CurrentUser.Token);
+                
                 string json = JsonSerializer.Serialize(route);
-                var responce = await client.PostAsync("Routes", new StringContent(json, Encoding.UTF8, "application/json"));
+                var responce = await Client.HttpClient.PostAsync("Routes", new StringContent(json, Encoding.UTF8, "application/json"));
                 if (!responce.IsSuccessStatusCode)
                 {
                     //error
@@ -256,7 +251,7 @@ namespace BibliotekaMVP.Model
         { 
             try
             {
-                var responce = await client.DeleteAsync($"Routes/{route_id}");
+                var responce = await Client.HttpClient.DeleteAsync($"Routes/{route_id}");
                 if (!responce.IsSuccessStatusCode)
                 {
                     //error
@@ -277,7 +272,7 @@ namespace BibliotekaMVP.Model
             try
             {
                 string json = JsonSerializer.Serialize(route);
-                var responce = await client.PutAsync($"Routes/{route.Id}", new StringContent(json, Encoding.UTF8, "application/json"));
+                var responce = await Client.HttpClient.PutAsync($"Routes/{route.Id}", new StringContent(json, Encoding.UTF8, "application/json"));
                 if (!responce.IsSuccessStatusCode)
                 {
                     //error
@@ -298,7 +293,7 @@ namespace BibliotekaMVP.Model
         {
             try
             {
-                var responce = await client.GetAsync("Products");
+                var responce = await Client.HttpClient.GetAsync("Products");
                 if (!responce.IsSuccessStatusCode)
                 {
                     return null;
@@ -319,7 +314,7 @@ namespace BibliotekaMVP.Model
             try
             {
                 string json = JsonSerializer.Serialize(product);
-                var responce = await client.PostAsync("Products", new StringContent(json, Encoding.UTF8, "application/json"));
+                var responce = await Client.HttpClient.PostAsync("Products", new StringContent(json, Encoding.UTF8, "application/json"));
                 if (!responce.IsSuccessStatusCode)
                 {
                     //error
@@ -339,7 +334,7 @@ namespace BibliotekaMVP.Model
         {
             try
             {
-                var responce = await client.DeleteAsync($"Products/{product_id}");
+                var responce = await Client.HttpClient.DeleteAsync($"Products/{product_id}");
                 if (!responce.IsSuccessStatusCode)
                 {
                     //error
@@ -360,7 +355,7 @@ namespace BibliotekaMVP.Model
             try
             {
                 string json = JsonSerializer.Serialize(product);
-                var responce = await client.PutAsync($"Products/{product.Id}", new StringContent(json, Encoding.UTF8, "application/json"));
+                var responce = await Client.HttpClient.PutAsync($"Products/{product.Id}", new StringContent(json, Encoding.UTF8, "application/json"));
                 if (!responce.IsSuccessStatusCode)
                 {
                     //error

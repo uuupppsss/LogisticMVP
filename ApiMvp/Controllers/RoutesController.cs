@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace ApiMvp.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class RoutesController : ControllerBase

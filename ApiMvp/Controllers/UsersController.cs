@@ -10,8 +10,8 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
-using Microsoft.IdentityModel.Tokens;
 using System.Data;
+using Microsoft.IdentityModel.Tokens;
 
 namespace ApiMvp.Controllers
 {
@@ -28,6 +28,7 @@ namespace ApiMvp.Controllers
 
         // POST: api/Users
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        //Удолить!
         [HttpPost]
         public async Task<ActionResult> PostUser(User user)
         {
@@ -64,7 +65,8 @@ namespace ApiMvp.Controllers
                 //Кладём Id (если нужно)
                 new Claim(ClaimValueTypes.Integer32, user.Id.ToString()),
                 //Кладём роль
-                new Claim(ClaimTypes.Name, user.Name)
+                //new Claim(ClaimTypes.Name, user.Name),
+                new Claim(ClaimTypes.Role, "admin")
             };
             var jwt = new JwtSecurityToken(
                    issuer: AuthOptions.ISSUER,

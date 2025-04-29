@@ -3,12 +3,6 @@ using System.Text;
 
 namespace ApiMvp.Model
 {
-    public class ResponseTokenAndRole
-    {
-        public string Token { get; set; }
-        public string Role { get; set; }
-    }
-
     public class AuthOptions
     {
         public const string ISSUER = "MyAuthServer"; // издатель токена
