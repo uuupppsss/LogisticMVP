@@ -125,7 +125,7 @@ namespace ApiMvp.Controllers
         [HttpGet ("SignIn/{username}/{hashPassword}")]
         public async Task<ActionResult<User>> SignIn(string username, string hashPassword)
         {
-            var user= await _context.Users.FindAsync(username);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Name == username);
             if (user == null) return NotFound();
             if (hashPassword != user.Password) return Unauthorized();
             return Ok(user);

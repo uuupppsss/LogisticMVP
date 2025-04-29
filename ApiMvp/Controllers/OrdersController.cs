@@ -98,7 +98,8 @@ namespace ApiMvp.Controllers
             _context.Orders.Add(order);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetOrder", new { id = order.Id }, order);
+            if(_context.Orders.Contains(order)) return Ok();
+            else return NoContent();
         }
 
         // DELETE: api/Orders/5

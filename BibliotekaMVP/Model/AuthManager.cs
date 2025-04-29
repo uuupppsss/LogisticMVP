@@ -23,7 +23,8 @@ namespace BibliotekaMVP.Model
             try
             {
                 string hashPwd = HashClass.HashMethod(password);
-                var responce = await client.GetAsync($"SignIn/{username}/{hashPwd}");
+                string hashUsername= HashClass.HashMethod(username);
+                var responce = await client.GetAsync($"Users/SignIn/{hashUsername}/{hashPwd}");
                 if (!responce.IsSuccessStatusCode)
                 {
                     //error
